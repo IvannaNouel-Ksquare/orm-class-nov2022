@@ -4,9 +4,6 @@ import { URL } from "../models/Url.model";
 
 export const createURL = async (url: string, shortUrl: string) => {
     try {
-        console.log(url);
-        console.log(shortUrl);
-
         const newURL = await URL.create({
             url, 
             shortUrl,

@@ -6,11 +6,6 @@ export class URL extends Model<InferAttributes<URL>, InferCreationAttributes<URL
     declare shortUrl: string;
     declare url: string;
 
-    getId(): string {
-        return this.url;
-    }
-
-
 }
 
 export const initURLModel = (sequelize: Sequelize) => {

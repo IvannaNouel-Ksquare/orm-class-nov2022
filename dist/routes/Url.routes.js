@@ -17,6 +17,7 @@ exports.UrlRouter = (0, express_1.Router)();
 exports.UrlRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const url = req.body.url;
     if (!url) {
+        //user errors
         res.status(400);
         return res.send({
             message: 'No URL'

@@ -1,21 +1,29 @@
 import dotenv from 'dotenv';
-import { startSequelize  } from './models';
+dotenv.config();
+import { startSequelize } from './models';
 import app from './app';
+import envs from './models/ConfigDBs'
 
 dotenv.config();
 const PORT = process.env.PORT;
+
+const envRunning = process.env.ENVIRONMENT === 'testing'? envs.test :envs.dev;
+
 const DB_PASS = <string>process.env.DB_PASS;
 const DB_USER = <string>process.env.DB_USER;
 const DB_NAME = <string>process.env.DB_NAME;
 const DB_HOSTNAME = <string>process.env.DB_HOSTNAME;
+
 
 console.log(DB_PASS);
 console.log(typeof DB_PASS);
 
 app.listen(PORT, async () => {
     try {
-        const sequelize = startSequelize(DB_NAME, DB_PASS, DB_HOSTNAME, DB_USER);
-        await sequelize.sync();
+        const sequelize = startSequelize(envs.test.database, envs.test.passwd, envs.test.host, envs.test.username);
+        /*  va a borrar la tabla y la va a volver a crear vacia para que ninguna
+         prueba anterior afecte nuestros test, por eso es mejor que este vacia con esto */
+        await sequelize.sync({ force: true });
         console.info('DB and Express server is up and running!!!!')
     } catch (error) {
         console.error(error);

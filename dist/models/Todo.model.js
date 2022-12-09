@@ -3,9 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.initTodoModel = exports.Todo = void 0;
 const sequelize_1 = require("sequelize");
 class Todo extends sequelize_1.Model {
-    getId() {
-        return this.id;
-    }
 }
 exports.Todo = Todo;
 const initTodoModel = (sequelize) => {
@@ -18,7 +15,7 @@ const initTodoModel = (sequelize) => {
         description: sequelize_1.DataTypes.STRING,
         is_completed: {
             type: sequelize_1.DataTypes.BOOLEAN,
-            defaultValue: false
+            defaultValue: true
         }
     }, {
         sequelize // Instance of sequelize that reflects the connection

@@ -1,12 +1,15 @@
 import { Router, Request, Response } from 'express';
 import { createURL, getURL } from '../repository/Url.repo';
 import { nanoid } from 'nanoid';
+import { TodoRouter } from './Todo.routes';
+import { fetchTodoById, updateTodoById } from '../repository/Todo.repo';
 export const UrlRouter = Router();
 
 UrlRouter.post('/', async (req: Request, res: Response) => {
     const url: string = req.body.url as string;
 
     if (!url) {
+        //user errors
         res.status(400)
         return res.send({
             message: 'No URL'

@@ -9,9 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createTodo = void 0;
+exports.deleteTodoById = exports.updateTodoById = exports.fetchTodoById = exports.createTodo = exports.listTodos = void 0;
 const Todo_model_1 = require("../models/Todo.model");
 // Create operation
+//CRUD
+const listTodos = () => __awaiter(void 0, void 0, void 0, function* () {
+    const res = yield Todo_model_1.Todo.findAll();
+    return res;
+});
+exports.listTodos = listTodos;
 const createTodo = (description) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const newTodo = yield Todo_model_1.Todo.create({
@@ -24,3 +30,48 @@ const createTodo = (description) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.createTodo = createTodo;
+const fetchTodoById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const foundTodo = yield Todo_model_1.Todo.findByPk(id);
+        return foundTodo;
+    }
+    catch (error) {
+        console.error(error);
+        return null;
+    }
+});
+exports.fetchTodoById = fetchTodoById;
+const updateTodoById = (todoModel) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id, description, is_completed } = todoModel;
+        const updated = yield Todo_model_1.Todo.update({
+            description: description,
+            is_completed: is_completed
+        }, {
+            where: {
+                id: id
+            }
+        });
+        return updated;
+    }
+    catch (error) {
+        console.error(error);
+        return null;
+    }
+});
+exports.updateTodoById = updateTodoById;
+const deleteTodoById = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const foo = yield Todo_model_1.Todo.destroy({
+            where: {
+                id: id
+            }
+        });
+        return foo;
+    }
+    catch (error) {
+        console.error(error);
+        return null;
+    }
+});
+exports.deleteTodoById = deleteTodoById;

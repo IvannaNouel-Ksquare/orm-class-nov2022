@@ -14,8 +14,6 @@ const Url_model_1 = require("../models/Url.model");
 // Create operation
 const createURL = (url, shortUrl) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(url);
-        console.log(shortUrl);
         const newURL = yield Url_model_1.URL.create({
             url,
             shortUrl,
