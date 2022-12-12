@@ -72,4 +72,5 @@ export const disableUser =async (uid:string, disabled: boolean) => {
     const user = await admin.auth().updateUser(uid, {
         disabled
     })
+    return user;
 }

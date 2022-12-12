@@ -42,6 +42,8 @@ const admin = __importStar(require("firebase-admin"));
 const app_1 = __importDefault(require("./app"));
 const ConfigDBs_1 = __importDefault(require("./models/ConfigDBs"));
 const PORT = process.env.PORT;
+const CREDENCIAL = process.env.GOOGLE_APPLICATION_CREDENCIALS;
+const FIREBASE_DB = process.env.FIREBASE_DB;
 admin.initializeApp();
 const envRunning = process.env.ENVIRONMENT === 'testing' ? ConfigDBs_1.default.test : ConfigDBs_1.default.dev;
 const DB_PASS = process.env.DB_PASS;

@@ -78,5 +78,6 @@ const disableUser = (uid, disabled) => __awaiter(void 0, void 0, void 0, functio
     const user = yield admin.auth().updateUser(uid, {
         disabled
     });
+    return user;
 });
 exports.disableUser = disableUser;
