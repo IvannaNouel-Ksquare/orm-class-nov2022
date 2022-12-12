@@ -15,10 +15,11 @@ const initTodoModel = (sequelize) => {
         description: sequelize_1.DataTypes.STRING,
         is_completed: {
             type: sequelize_1.DataTypes.BOOLEAN,
-            defaultValue: true
-        }
+            defaultValue: true,
+        },
     }, {
-        sequelize // Instance of sequelize that reflects the connection
+        sequelize,
+        timestamps: false,
     });
 };
 exports.initTodoModel = initTodoModel;

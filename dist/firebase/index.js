@@ -31,35 +31,52 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config();
-const models_1 = require("./models");
+exports.disableUser = exports.updateUser = exports.getAllUsers = exports.readUser = exports.creatUser = void 0;
 const admin = __importStar(require("firebase-admin"));
-const app_1 = __importDefault(require("./app"));
-const ConfigDBs_1 = __importDefault(require("./models/ConfigDBs"));
-const PORT = process.env.PORT;
-admin.initializeApp();
-const envRunning = process.env.ENVIRONMENT === 'testing' ? ConfigDBs_1.default.test : ConfigDBs_1.default.dev;
-const DB_PASS = process.env.DB_PASS;
-const DB_USER = process.env.DB_USER;
-const DB_NAME = process.env.DB_NAME;
-const DB_HOSTNAME = process.env.DB_HOSTNAME;
-console.log(DB_PASS);
-console.log(typeof DB_PASS);
-app_1.default.listen(PORT, () => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const sequelize = (0, models_1.startSequelize)(ConfigDBs_1.default.test.database, ConfigDBs_1.default.test.passwd, ConfigDBs_1.default.test.host, ConfigDBs_1.default.test.username);
-        /*  va a borrar la tabla y la va a volver a crear vacia para que ninguna
-         prueba anterior afecte nuestros test, por eso es mejor que este vacia con esto */
-        yield sequelize.sync({ force: true });
-        console.info('DB and Express server is up and running!!!!');
-    }
-    catch (error) {
-        console.error(error);
-        process.abort();
-    }
-}));
+const mapToUser = (user) => {
+    const customClaims = user.customClaims || { role: "" };
+    const role = customClaims.role ? customClaims.role : "";
+    return {
+        uid: user.uid,
+        email: user.email,
+        userName: user.displayName,
+        role,
+        isDisable: user.disabled
+    };
+};
+//uid = user id
+const creatUser = (displayName, email, password, role) => __awaiter(void 0, void 0, void 0, function* () {
+    const { uid } = yield admin.auth().createUser({
+        displayName,
+        email,
+        password
+    });
+    yield admin.auth().setCustomUserClaims(uid, { role });
+    return uid;
+});
+exports.creatUser = creatUser;
+const readUser = (uid) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield admin.auth().getUser(uid);
+    return mapToUser(user);
+});
+exports.readUser = readUser;
+const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
+    const listOfUsers = yield admin.auth().listUsers(10);
+    const users = listOfUsers.users.map(mapToUser);
+    return users;
+});
+exports.getAllUsers = getAllUsers;
+const updateUser = (uid, displayName) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield admin.auth().updateUser(uid, {
+        displayName
+    });
+    return mapToUser(user);
+});
+exports.updateUser = updateUser;
+const disableUser = (uid, disabled) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield admin.auth().updateUser(uid, {
+        disabled
+    });
+});
+exports.disableUser = disableUser;

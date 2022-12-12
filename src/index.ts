@@ -1,11 +1,13 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import { startSequelize } from './models';
+import * as admin from 'firebase-admin';
 import app from './app';
 import envs from './models/ConfigDBs'
-
-dotenv.config();
 const PORT = process.env.PORT;
+
+
+admin.initializeApp();
 
 const envRunning = process.env.ENVIRONMENT === 'testing'? envs.test :envs.dev;
 

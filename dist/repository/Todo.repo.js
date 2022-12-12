@@ -52,7 +52,7 @@ const updateTodoById = (todoModel) => __awaiter(void 0, void 0, void 0, function
                 id: id
             }
         });
-        return updated;
+        return updated[0];
     }
     catch (error) {
         console.error(error);

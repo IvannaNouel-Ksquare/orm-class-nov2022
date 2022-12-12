@@ -31,7 +31,7 @@ exports.TodoRouter.post('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
     });
 }));
 exports.TodoRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = req.params['id'];
+    const id = Number(req.params["id"]);
     if (!id) {
         res.status(400);
         return res.send({
@@ -39,19 +39,17 @@ exports.TodoRouter.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, f
         });
     }
     const Todo = yield (0, Todo_repo_1.fetchTodoById)(id);
-    console.log(Todo);
     if (!Todo) {
         res.status(404);
         return res.send({
             message: 'not Found'
         });
     }
-    res.send({
-        Todo
-    });
+    res.status(200);
+    return res.send(Todo);
 }));
 exports.TodoRouter.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = req.params.id;
+    const id = Number(req.params["id"]);
     const { description, is_completed } = req.body;
     if (!id) {
         res.status(400);
@@ -60,21 +58,22 @@ exports.TodoRouter.put('/:id', (req, res) => __awaiter(void 0, void 0, void 0, f
         });
     }
     const todo = {
-        id: parseInt(id),
+        id,
         description,
         is_completed
     };
     const affectedRows = yield (0, Todo_repo_1.updateTodoById)(todo);
-    if (!affectedRows) {
+    if (affectedRows === 0) {
         res.status(404);
         return res.send({
             message: 'something went wrong'
         });
     }
-    res.send(affectedRows);
+    res.status(200);
+    res.send({ affectedRows });
 }));
 exports.TodoRouter.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const id = req.params['id'];
+    const id = Number(req.params["id"]);
     if (!id) {
         res.status(400);
         return res.send({
