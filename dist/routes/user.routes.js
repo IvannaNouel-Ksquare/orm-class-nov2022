@@ -38,20 +38,64 @@ exports.UserRouter.post('/newUser', (req, res) => __awaiter(void 0, void 0, void
 exports.UserRouter.put('/disable/:uid', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let uid = req.params.uid;
     const { disabled } = req.body;
-    if (!uid) {
+    if (disabled === undefined || typeof disabled !== 'boolean') {
         return res.status(400).send({
-            error: 'not a valid id'
+            error: 'invalid data'
         });
     }
     try {
-        const disable = yield (0, firebase_1.disableUser)(uid, disabled);
-        if (disable === undefined || typeof disable !== 'boolean') {
+        const user = yield (0, firebase_1.disableUser)(uid, disabled);
+        if (!user) {
             return res.status(400).send({
-                error: 'invalid data'
+                error: "invalid id"
             });
         }
-        res.status(200).send({
-            disable
+        res.status(200).send(user);
+    }
+    catch (error) {
+        res.status(500).send({ error: 'something went wrong' });
+    }
+}));
+exports.UserRouter.put('/update/:uid', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let uid = req.params.uid;
+    const { displayName, email, password } = req.body;
+    try {
+        const updatedUser = yield (0, firebase_1.updateUser)(uid, displayName, email, password);
+        if (!updatedUser) {
+            return res.status(400).send({
+                error: "invalid id"
+            });
+        }
+        res.status(201).send({
+            updatedUser
+        });
+    }
+    catch (error) {
+        res.status(500).send({ error: 'something went wrong' });
+    }
+}));
+exports.UserRouter.get('/', (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const users = yield (0, firebase_1.getAllUsers)();
+        res.status(202).send({
+            users
+        });
+    }
+    catch (error) {
+        res.status(500).send({ error: 'something went wrong' });
+    }
+}));
+exports.UserRouter.get('/:uid', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    let uid = req.params.uid;
+    try {
+        const user = yield (0, firebase_1.readUser)(uid);
+        if (!user) {
+            return res.status(400).send({
+                error: "invalid id"
+            });
+        }
+        res.status(202).send({
+            user
         });
     }
     catch (error) {

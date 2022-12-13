@@ -47,9 +47,14 @@ export const creatUser = async (
 }
 
 export const readUser = async (uid: string) => {
-    const user = await admin.auth().getUser(uid);
+    try {
+        const user = await admin.auth().getUser(uid);
+        return mapToUser(user);
 
-    return mapToUser(user);
+    } catch (error) {
+        return null;
+    }
+
 }
 
 export const getAllUsers = async () => {
@@ -59,18 +64,33 @@ export const getAllUsers = async () => {
     return users;
 }
 
-export const updateUser = async (uid: string, displayName: string) => {
-    const user = await admin.auth().updateUser(uid, {
+export const updateUser = async (uid: string, displayName: string, email: string, password: string) => {
+    try {
+        const user = await admin.auth().updateUser(uid, {
+            displayName,
+            email,
+            password
+        })
 
-        displayName
-    })
+        return mapToUser(user);
 
-    return mapToUser(user);
+    } catch (error) {
+        return null;
+
+    }
 }
 
-export const disableUser =async (uid:string, disabled: boolean) => {
-    const user = await admin.auth().updateUser(uid, {
-        disabled
-    })
-    return user;
+export const disableUser = async (uid: string, disabled: boolean) => {
+    try {
+        const user = await admin.auth().updateUser(uid, {
+            disabled
+        })
+        return {
+            isDisabled: user.disabled
+        };
+
+    } catch (error) {
+        return null;
+    }
+
 }

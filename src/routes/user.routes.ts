@@ -31,27 +31,25 @@ UserRouter.post('/newUser', async (req: Request, res: Response) => {
     }
 })
 
-UserRouter.put('/disable/:uid', async (req: Request, res: Response) => {
 
+UserRouter.put('/disable/:uid', async (req: Request, res: Response) => {
     let uid = req.params.uid;
     const { disabled } = req.body;
 
-    if (!uid) {
+    if (disabled === undefined || typeof disabled !== 'boolean') {
         return res.status(400).send({
-            error: 'not a valid id'
+            error: 'invalid data'
         })
     }
-    try {
-        const disable = await disableUser(uid, disabled);
-        if (disable === undefined || typeof disable !== 'boolean') {
-            return res.status(400).send({
-                error: 'invalid data'
-            })
 
+    try {
+        const user = await disableUser(uid, disabled);
+        if (!user) {
+            return res.status(400).send({
+                error: "invalid id"
+            })
         }
-        res.status(200).send({
-            disable
-        })
+        res.status(200).send(user)
 
     } catch (error) {
         res.status(500).send({ error: 'something went wrong' });
@@ -59,3 +57,62 @@ UserRouter.put('/disable/:uid', async (req: Request, res: Response) => {
     }
 
 })
+
+UserRouter.put('/update/:uid', async (req: Request, res: Response) => {
+
+    let uid = req.params.uid;
+    const { displayName, email, password } = req.body;
+
+    try {
+        const updatedUser = await updateUser(uid, displayName, email, password);
+        if (!updatedUser) {
+            return res.status(400).send({
+                error: "invalid id"
+            })
+        }
+        res.status(201).send({
+            updatedUser
+        })
+
+    } catch (error) {
+        res.status(500).send({ error: 'something went wrong' });
+    }
+})
+
+UserRouter.get('/', async (_req: Request, res: Response) => {
+
+    try {
+        const users = await getAllUsers();
+        res.status(202).send({
+            users
+        })
+
+    }
+    catch (error) {
+        res.status(500).send({ error: 'something went wrong' });
+    }
+})
+
+
+
+UserRouter.get('/:uid', async (req: Request, res: Response) => {
+
+    let uid = req.params.uid;
+
+    try {
+        const user = await readUser(uid);
+        if (!user) {
+            return res.status(400).send({
+                error: "invalid id"
+            })
+        }
+        res.status(202).send({
+            user
+        })
+
+    }
+    catch (error) {
+        res.status(500).send({ error: 'something went wrong' });
+    }
+})
+

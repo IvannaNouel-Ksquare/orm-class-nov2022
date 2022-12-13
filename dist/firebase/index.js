@@ -57,8 +57,13 @@ const creatUser = (displayName, email, password, role) => __awaiter(void 0, void
 });
 exports.creatUser = creatUser;
 const readUser = (uid) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield admin.auth().getUser(uid);
-    return mapToUser(user);
+    try {
+        const user = yield admin.auth().getUser(uid);
+        return mapToUser(user);
+    }
+    catch (error) {
+        return null;
+    }
 });
 exports.readUser = readUser;
 const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -67,17 +72,31 @@ const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
     return users;
 });
 exports.getAllUsers = getAllUsers;
-const updateUser = (uid, displayName) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield admin.auth().updateUser(uid, {
-        displayName
-    });
-    return mapToUser(user);
+const updateUser = (uid, displayName, email, password) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = yield admin.auth().updateUser(uid, {
+            displayName,
+            email,
+            password
+        });
+        return mapToUser(user);
+    }
+    catch (error) {
+        return null;
+    }
 });
 exports.updateUser = updateUser;
 const disableUser = (uid, disabled) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield admin.auth().updateUser(uid, {
-        disabled
-    });
-    return user;
+    try {
+        const user = yield admin.auth().updateUser(uid, {
+            disabled
+        });
+        return {
+            isDisabled: user.disabled
+        };
+    }
+    catch (error) {
+        return null;
+    }
 });
 exports.disableUser = disableUser;

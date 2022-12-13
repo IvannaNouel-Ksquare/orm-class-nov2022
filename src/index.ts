@@ -5,8 +5,6 @@ import * as admin from 'firebase-admin';
 import app from './app';
 import envs from './models/ConfigDBs'
 const PORT = process.env.PORT;
-const CREDENCIAL = process.env.GOOGLE_APPLICATION_CREDENCIALS;
-const FIREBASE_DB = process.env.FIREBASE_DB;
 
 admin.initializeApp();
 
