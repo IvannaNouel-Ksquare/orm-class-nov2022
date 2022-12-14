@@ -12,6 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserRouter = void 0;
 const express_1 = require("express");
 const firebase_1 = require("../firebase");
+const isAuthenticated_1 = require("../middlewares/isAuthenticated");
+const isAuthorized_1 = require("../middlewares/isAuthorized");
 exports.UserRouter = (0, express_1.Router)();
 //endpoint para crear usuarios
 exports.UserRouter.post('/newUser', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -85,7 +87,7 @@ exports.UserRouter.get('/', (_req, res) => __awaiter(void 0, void 0, void 0, fun
         res.status(500).send({ error: 'something went wrong' });
     }
 }));
-exports.UserRouter.get('/:uid', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.UserRouter.get('/:uid', isAuthenticated_1.isAuthenticated, (0, isAuthorized_1.isAuthorized)({ role: ['admin'], allowSameUser: true }), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let uid = req.params.uid;
     try {
         const user = yield (0, firebase_1.readUser)(uid);

@@ -1,5 +1,7 @@
 import { Router, Request, Response } from "express";
 import { creatUser, disableUser, getAllUsers, readUser, updateUser } from "../firebase";
+import { isAuthenticated } from "../middlewares/isAuthenticated";
+import { isAuthorized } from "../middlewares/isAuthorized";
 
 export const UserRouter = Router();
 
@@ -95,7 +97,7 @@ UserRouter.get('/', async (_req: Request, res: Response) => {
 
 
 
-UserRouter.get('/:uid', async (req: Request, res: Response) => {
+UserRouter.get('/:uid', isAuthenticated, isAuthorized ({role: ['admin'], allowSameUser:true}),async (req: Request, res: Response) => {
 
     let uid = req.params.uid;
 
